@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: instructions-capture-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+
+    consumer:
+      group-id: instructions-capture
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: com.example.instructions.model
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      properties:
+        linger.ms: 10
+        acks: all
+        compression.type: gzip
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: true
+
+server:
+  port: 8080
+  error:
+    include-message: never
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+logging:
+  level:
+    root: INFO
+    org.springframework.kafka: WARN
+    com.example.instructions: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  kafka:
+    bootstrap-servers: localhost:9092
+  logging:
+    level:
+      com.example.instructions: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+  server:
+    port: 8080
+  logging:
+    level:
+  
