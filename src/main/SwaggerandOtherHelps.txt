@@ -1,0 +1,16 @@
+Swagger:
+http://localhost:8080/swagger-ui.html (or /swagger-ui/index.html).
+
+CURL
+curl -X POST "http://localhost:8080/api/trades/upload" -F "file=@sample.trades.csv"
+curl -X POST "http://localhost:8080/api/trades/upload" -F "file=@sample.trades.json"
+curl http://localhost:8080/api/trades/store
+
+To produce a Kafka message into instructions.inbound
+bash
+kafka-console-producer --broker-list localhost:9092 --topic instructions.inbound
+# then paste JSON:
+{"accountNumber":"1234567890","securityId":"abc123","tradeType":"Buy","amount":100000,"timestamp":"2025-08-04T21:15:33Z"}
+
+
+
